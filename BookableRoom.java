@@ -5,9 +5,13 @@ public class BookableRoom {
     private int occupancy;
     private int seqID;
 
-    public BookableRoom(Room rooms, String timeSlot, int occupancy) {
+    public BookableRoom(Room rooms, String timeSlot) {
         this.rooms = rooms;
         this.timeSlot = timeSlot;
+        this.status = "EMPTY";
+    }
+
+    public void setOccupancy(int occupancy) {
         this.occupancy = occupancy;
         if (occupancy == 0) {
             status = "EMPTY";
