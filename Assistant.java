@@ -1,6 +1,7 @@
 public class Assistant {
     private String universityEmail;
     private String name;
+    private int seqID;
 
     public Assistant(String name, String universityEmail) {
         if (name != null) {
@@ -17,6 +18,14 @@ public class Assistant {
 
     public String getName() {
         return name;
+    }
+
+    public void setSeqID(int seqID) {
+        this.seqID = seqID;
+    }
+
+    public int getSeqID() {
+        return seqID;
     }
 
     public String getAssistants() {
