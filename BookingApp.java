@@ -1,22 +1,44 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * An application for the Booking System of COVID tests for the University of Knowledge
+ * 
+ * @author Matthew Cheng 
+ * @version 1.1
+ */
 public class BookingApp {
+    // private instance variables
     private ArrayList<Assistant> assistants;
     private ArrayList<Room> rooms;
     private BookingSystem bookingSystems = new BookingSystem();
 
-
+    /**
+     * constructor for initialising bookingapp
+     * 
+     * @param assistants the assistants in the system
+     * @param rooms the rooms in the system
+     */
     public BookingApp(ArrayList<Assistant> assistants, ArrayList<Room> rooms) {
         this.assistants = assistants;
         this.rooms = rooms;
     }
 
+    /**
+     * main menu for the bookingapp
+     * 
+     * allowing users to access a menu of options:
+     *     - listing, adding and removing bookable rooms
+     *     - listing, adding and removing assistants on shift
+     *     - listing, adding, removing and concluding bookings
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void mainMenu() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console 
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
@@ -46,6 +68,7 @@ public class BookingApp {
 
         selection = input.nextInt();
 
+        // switch cases for user-selected options
         switch (selection) {
             case 0:
                 mainMenu();
@@ -84,21 +107,31 @@ public class BookingApp {
                 System.exit(1);
                 break;
             default:
+                // default case: error message shown when user entered an invalid option
                 System.out.println("Invalid selection - please select a valid option from the menu.");
         }
         input.close();
     }
 
+    /**
+     * function listBookableRooms (option 1 of main menu)
+     * 
+     * printing the list of all bookable rooms to the console with the given print template
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void listBookableRooms() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("University of Knowledge - COVID test");
         System.out.println("");
         System.out.println("List of Bookable Rooms");
+        // calling function listAllBookableRooms from bookingSystems
         bookingSystems.listAllBookableRooms();
         System.out.println("");
         System.out.println("0. Back to main menu.");
@@ -116,11 +149,20 @@ public class BookingApp {
         input.close();
     }
 
+    /**
+     * function addBookableRooms (option 2 of main menu)
+     * 
+     * print the list of rooms to the console and allow user to choose an entry from the list in order to add a bookable room
+     * a bookable room is added by entering the sequential ID, a date and a time seperated by a white space
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void addBookableRooms() {
         String selection;
-        int lr = 11;
+        int lr = 11; // the sequential ID of the list starts from 11
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
@@ -129,6 +171,7 @@ public class BookingApp {
         System.out.println("Adding bookable room");
         System.out.println("");
         System.out.println("List of Rooms:");
+        // for loop to list out the rooms with sequential ID
         for (int rm = 0; rm < rooms.size(); rm++) {
             String listRooms = "";
             listRooms = rooms.get(rm).getRooms();
@@ -154,20 +197,29 @@ public class BookingApp {
             System.exit(1);
         }
         else {
+            // splitting the user-entered string with empty spaces
             String[] splitString = selection.split(" ");
+            // checking if the length of the array splitString is 3 
+            // (there should be 3 elements: sequential ID, date and time)
             if (splitString.length == 3) {
                 int selectedID = Integer.parseInt(splitString[0]);
                 String date = splitString[1];
                 String time = splitString[2];
+                // concatenating the string date and time to string timeSlot
                 String timeSlot = date + " " + time;
+                // for loop to check which room does the user-entered sequential ID refer to
                 for (int sr = 0; sr < rooms.size(); sr++) {
                     if (rooms.get(sr).getSeqID() == selectedID) {
+                        // adding a bookable room by calling the function addBookableRooms from bookingSystems
                         bookingSystems.addBookableRooms(rooms.get(sr), timeSlot);
+                        // promoting the user to menu addBookableRoomsValidInput 
                         addBookableRoomsValidInput(selectedID);
                     }
                 }
             }
+            // checking if the length of the splitted string is not equal to 3
             else if (splitString.length != 3){
+                // prompting the user to menu addBookableRoomsInvalidInput
                 addBookableRoomsInvalidInput("Please follow the correct format listed below.");
             }
         }
@@ -175,15 +227,25 @@ public class BookingApp {
         input.close(); 
     }
 
+    /**
+     * menu addBookableRoomsValidInput (if the user input in the menu addBookableRooms is valid)
+     * 
+     * listing out the bookable room that the user have added
+     * @param selectedID the user-selected ID for the bookable room to be added 
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void addBookableRoomsValidInput(int selectedID) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Bookable Room added successfully:");
-        bookingSystems.getSpecificBookableRoom(selectedID);
+        // calling function getSpecificBookableRoomAdd with parameter selectedID from bookingSystems to list the bookableRoom called
+        bookingSystems.getSpecificBookableRoomAdd(selectedID);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
         System.out.println("The sequential ID listed to a room, a date (dd/mm/yyyy), and a time (HH:MM),");
@@ -204,14 +266,24 @@ public class BookingApp {
         input.close(); 
     }
 
+    /**
+     * menu addBookableRoomInvalidInput (if the user input in menu addBookableRooms is invalid)
+     * 
+     * showing the error message 
+     * @param errorMessage the error message for the user
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void addBookableRoomsInvalidInput(String errorMessage) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Error!");
+        // printing the error message (parameter passed to the function)
         System.out.println(errorMessage);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
@@ -233,16 +305,26 @@ public class BookingApp {
         input.close(); 
     }
 
+    /**
+     * menu removeBookableRooms (option 3 of main menu)
+     * 
+     * printing the list of empty bookable rooms and allow user to remove a bookable room from the list
+     * a bookable room can be removed by entering the sequential ID (the bookable room must be EMPTY)
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void removeBookableRooms() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("University of Knowledge - COVID test");
         System.out.println("");
         System.out.println("List of EMPTY Bookable Rooms");
+        // calling function listEmptyBookableRooms from bookingSystems to print a list of EMPTY bookable rooms
         bookingSystems.listEmptyBookableRooms();
         System.out.println("");
         System.out.println("Removing bookable room");
@@ -263,12 +345,13 @@ public class BookingApp {
             System.exit(1);
         }
         else {
+            removeBookableRoomsValidInput(selection);
         }
 
         input.close();
     }
 
-    public void removeBookableRoomsValidInput() {
+    public void removeBookableRoomsValidInput(int selectedID) {
         int selection;
         Scanner input = new Scanner(System.in);
 
@@ -276,13 +359,14 @@ public class BookingApp {
         System.out.flush();  
 
         System.out.println("Bookable Room removed successfully:");
-        System.out.println("<print bookable room>");
+        bookingSystems.getSpecificBookableRoomRemove(selectedID);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
         System.out.println("The sequential ID to select the bookable room to be removed.");
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
+        bookingSystems.removeBookableRooms(selectedID);
 
         selection = input.nextInt();
 
@@ -382,10 +466,10 @@ public class BookingApp {
 
         selection = input.nextLine();
 
-        if (selection == "0") {
+        if (selection.equals("0")) {
             mainMenu();
         }
-        else if (selection == "-1") {
+        else if (selection.equals("-1")) {
             System.exit(1);
         }
         else {
@@ -401,7 +485,8 @@ public class BookingApp {
                 addAssistantOnShiftValidInput();
             }
             else {
-                addAssistantOnShiftInvalidInput();
+                String errorMessage = "This is an error message";
+                addAssistantOnShiftInvalidInput(errorMessage);
             }
         }
 
@@ -410,14 +495,13 @@ public class BookingApp {
 
     public void addAssistantOnShiftValidInput() {
         int selection;
-        int la = 11;
         Scanner input = new Scanner(System.in);
 
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Assistant on Shift added successfully:");
-        System.out.println("<print assistant on shift>");
+        bookingSystems.getNewAddedAssistantsOnShift();
         System.out.println("Please, enter one of the following:");
         System.out.println("");
         System.out.println("The sequential ID of an assistant and date (dd/mm/yyyy), separated by a white space.");
@@ -437,16 +521,15 @@ public class BookingApp {
         input.close();
     }
 
-    public void addAssistantOnShiftInvalidInput() {
+    public void addAssistantOnShiftInvalidInput(String errorMessage) {
         int selection;
-        int la = 11;
         Scanner input = new Scanner(System.in);
 
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Error!");
-        System.out.println("<message explaining the error>");
+        System.out.println(errorMessage);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
         System.out.println("The sequential ID of an assistant and date (dd/mm/yyyy), separated by a white space.");
@@ -475,7 +558,9 @@ public class BookingApp {
 
         System.out.println("University of Knowledge - COVID test");
         System.out.println("");
-        System.out.println("<list assistant on shifts status:FREE>");
+        System.out.println("List of Free Assistants On Shift");
+        bookingSystems.listFreeAssistantOnShift();
+        System.out.println("");
         System.out.println("Removing assistant on shift");
         System.out.println("");
         System.out.println("Please, enter one of the following:");
@@ -493,11 +578,14 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
+        else {
+            removeAssistantOnShiftValidInput(selection);
+        }
 
         input.close();
     }
 
-    public void removeAssistantOnShiftValidInput() {
+    public void removeAssistantOnShiftValidInput(int selectedID) {
         int selection;
         Scanner input = new Scanner(System.in);
 
@@ -505,13 +593,14 @@ public class BookingApp {
         System.out.flush();  
 
         System.out.println("Assistant on Shift removed successfully:");
-        System.out.println("<print assistant on shift>");
+        bookingSystems.getSpecificAssistantOnShiftRemove(selectedID);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
         System.out.println("The sequential ID to select the assistant on shift to be removed.");
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
+        bookingSystems.removeAssistantsOnShift(selectedID);
 
         selection = input.nextInt();
 
@@ -525,7 +614,7 @@ public class BookingApp {
         input.close();
     }
 
-    public void removeAssistantOnShiftInvalidInput() {
+    public void removeAssistantOnShiftInvalidInput(String errorMessage) {
         int selection;
         Scanner input = new Scanner(System.in);
 
@@ -533,7 +622,7 @@ public class BookingApp {
         System.out.flush();  
 
         System.out.println("Error!");
-        System.out.println("<message explaining the error>");
+        System.out.println(errorMessage);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
         System.out.println("The sequential ID to select the assistant on shift to be removed.");
@@ -603,7 +692,8 @@ public class BookingApp {
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
-        System.out.println("<list bookings status:All>");
+        System.out.println("List of All Bookings:");
+        bookingSystems.listAllBookings();
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
@@ -627,7 +717,8 @@ public class BookingApp {
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
-        System.out.println("<list bookings status:Scheduled>");
+        System.out.println("List of Scheduled Bookings:");
+        bookingSystems.listScheduledBookings();
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
@@ -651,7 +742,8 @@ public class BookingApp {
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
-        System.out.println("<list bookings status:Completed>");
+        System.out.println("List of Completed Bookings:");
+        bookingSystems.listCompletedBookings();
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
@@ -675,7 +767,8 @@ public class BookingApp {
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
-        System.out.println("<list bookings status:All(default)>");
+        System.out.println("List of Bookings:");
+        bookingSystems.listAllBookings();
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
@@ -693,13 +786,140 @@ public class BookingApp {
     }
 
     public void addBooking() {
+        String selection;
+        Scanner input = new Scanner(System.in);
+        bookingSystems.setAvailableTimeSlots();
+
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
+
+        System.out.println("University of Knowledge - COVID test");
+        System.out.println("");
+        System.out.println("Adding booking (appointment for a COVID test) to the system");
+        System.out.println("");
+        System.out.println("List of available time-slots:");
+        bookingSystems.showAvailableTimeSlots();
+        System.out.println("");
+        System.out.println("Please, enter one of the following:");
+        System.out.println("");
+        System.out.println("The sequential ID of an available time-slot and the student email, separated by a white space.");
+        System.out.println("0. Back to main menu.");
+        System.out.println("-1. Quit application.");
+        System.out.println("");
+
+        selection = input.nextLine();
+
+        if (selection.equals("0")) {
+            mainMenu();
+        }
+        else if (selection.equals("-1")) {
+            System.exit(1);
+        }
+        else {
+            String[] splitString = selection.split(" ");
+            if (splitString.length == 2) {
+                int selectedID = Integer.parseInt(splitString[0]);
+                String studentEmail = splitString[1];
+                for (int i = 0; i < bookingSystems.getAvailableTimeSlots().size(); i++) {
+                    String[] availableTimeSlots = bookingSystems.getAvailableTimeSlots().get(i).split(" ");
+                    if (Integer.parseInt(availableTimeSlots[0]) == selectedID) {
+                        String timeSlot = availableTimeSlots[1] + " " + availableTimeSlots[2];
+                        for (int a = 0; a < bookingSystems.getAssistantOnShifts().size(); a++) {
+                            if (timeSlot.equals(bookingSystems.getAssistantOnShifts().get(a).getTimeSlot())) {
+                                for (int b = 0; b < bookingSystems.getBookableRoom().size(); b++) {
+                                    if (timeSlot.equals(bookingSystems.getBookableRoom().get(b).getTimeSlot())) {
+                                        bookingSystems.addBookings(timeSlot, studentEmail, bookingSystems.getBookableRoom().get(b), bookingSystems.getAssistantOnShifts().get(a));
+                                        addBookingValidInput();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                String errorMessage = "Please follow the correct format of entry";
+                addBookingInvalidInput(errorMessage);
+            }
+        }
+
+        input.close();
+    }
+
+    public void addBookingValidInput() {
+        String selection;
+        Scanner input = new Scanner(System.in);
+        bookingSystems.setAvailableTimeSlots();
+
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
+
+        System.out.println("Booking added successfully:");
+        bookingSystems.getNewestAddedBooking();
+        System.out.println("");
+        System.out.println("List of available time-slots:");
+        bookingSystems.showAvailableTimeSlots();
+        System.out.println("");
+        System.out.println("Please, enter one of the following:");
+        System.out.println("");
+        System.out.println("The sequential ID of an available time-slot and the student email, separated by a white space.");
+        System.out.println("0. Back to main menu.");
+        System.out.println("-1. Quit application.");
+        System.out.println("");
+
+        selection = input.nextLine();
+
+        if (selection.equals("0")) {
+            mainMenu();
+        }
+        else if (selection.equals("-1")) {
+            System.exit(1);
+        }
+        else {
+            String[] splitString = selection.split(" ");
+            if (splitString.length == 2) {
+                int selectedID = Integer.parseInt(splitString[0]);
+                String studentEmail = splitString[1];
+                for (int i = 0; i < bookingSystems.getAvailableTimeSlots().size(); i++) {
+                    String[] availableTimeSlots = bookingSystems.getAvailableTimeSlots().get(i).split(" ");
+                    if (Integer.parseInt(availableTimeSlots[0]) == selectedID) {
+                        String timeSlot = availableTimeSlots[1] + " " + availableTimeSlots[2];
+                        for (int a = 0; a < bookingSystems.getAssistantOnShifts().size(); a++) {
+                            if (timeSlot.equals(bookingSystems.getAssistantOnShifts().get(a).getTimeSlot())) {
+                                for (int b = 0; b < bookingSystems.getBookableRoom().size(); b++) {
+                                    if (timeSlot.equals(bookingSystems.getBookableRoom().get(b).getTimeSlot())) {
+                                        bookingSystems.addBookings(timeSlot, studentEmail, bookingSystems.getBookableRoom().get(b), bookingSystems.getAssistantOnShifts().get(a));
+                                        addBookingValidInput();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                String errorMessage = "Please follow the correct format of entry";
+                addBookingInvalidInput(errorMessage);
+            }
+        }
+
+        input.close();
+    }
+
+    public void addBookingInvalidInput(String errorMessage) {
         int selection;
         Scanner input = new Scanner(System.in);
 
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
-        System.out.println("University of Knowledge - COVID test");
+        System.out.println("Error!");
+        System.out.println(errorMessage);
+        System.out.println("Please, enter one of the following:");
+        System.out.println("");
+        System.out.println("The sequential ID of an available time-slot and the student email, separated by a white space.");
+        System.out.println("0. Back to main menu.");
+        System.out.println("-1. Quit application.");
         System.out.println("");
 
         selection = input.nextInt();
@@ -723,9 +943,71 @@ public class BookingApp {
 
         System.out.println("University of Knowledge - COVID test");
         System.out.println("");
-        System.out.println("<list booking status:SCHEDULED>");
+        System.out.println("List of Scheduled Bookings");
+        bookingSystems.listScheduledBookings();
+        System.out.println("");
         System.out.println("Removing booking from the system");
         System.out.println("");
+        System.out.println("Please, enter one of the following:");
+        System.out.println("");
+        System.out.println("The sequential ID to select the booking to be removed from the listed bookings above.");
+        System.out.println("0. Back to main menu.");
+        System.out.println("-1. Quit application");
+        System.out.println("");
+
+        selection = input.nextInt();
+
+        if (selection == 0) {
+            mainMenu();
+        }
+        else if (selection == -1) {
+            System.exit(1);
+        }
+        else {
+            removeBookingValidInput(selection);
+        }
+
+        input.close();
+    }
+
+    public void removeBookingValidInput(int selectedID) {
+        int selection;
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
+
+        System.out.println("Booking removed successfully:");
+        bookingSystems.getSpecificBooking(selectedID);
+        System.out.println("Please, enter one of the following:");
+        System.out.println("");
+        System.out.println("The sequential ID to select the booking to be removed from the listed bookings above.");
+        System.out.println("0. Back to main menu.");
+        System.out.println("-1. Quit application");
+        System.out.println("");
+        bookingSystems.removeBookings(selectedID);
+
+        selection = input.nextInt();
+
+        if (selection == 0) {
+            mainMenu();
+        }
+        else if (selection == -1) {
+            System.exit(1);
+        }
+
+        input.close();
+    }
+
+    public void removeBookingInvalidInput(String errorMessage) {
+        int selection;
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
+
+        System.out.println("Error!");
+        System.out.println(errorMessage);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
         System.out.println("The sequential ID to select the booking to be removed from the listed bookings above.");
@@ -754,9 +1036,43 @@ public class BookingApp {
 
         System.out.println("University of Knowledge - COVID test");
         System.out.println("");
-        System.out.println("<list booking status:SCHEDULED>");
+        System.out.println("List of Scheduled Bookings:");
+        bookingSystems.listScheduledBookings();
+        System.out.println("");
         System.out.println("Conclude booking");
         System.out.println("");
+        System.out.println("Please, enter one of the following:");
+        System.out.println("");
+        System.out.println("The sequential ID to select the booking to be completed.");
+        System.out.println("0. Back to main menu.");
+        System.out.println("-1. Quit application");
+        System.out.println("");
+
+        selection = input.nextInt();
+
+        if (selection == 0) {
+            mainMenu();
+        }
+        else if (selection == -1) {
+            System.exit(1);
+        }
+        else {
+            concludeBookingValidInput(selection);
+        }
+
+        input.close();
+    }
+
+    public void concludeBookingValidInput(int selectedID) {
+        int selection;
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
+
+        System.out.println("Booking completed successfully:");
+        bookingSystems.concludeBookings(selectedID);
+        bookingSystems.getSpecificBooking(selectedID);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
         System.out.println("The sequential ID to select the booking to be completed.");
@@ -776,6 +1092,37 @@ public class BookingApp {
         input.close();
     }
 
+    public void concludeBookingInvalidInput() {
+        int selection;
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
+
+        System.out.println("Error!");
+        System.out.println("<message explaining the error>");
+        System.out.println("Please, enter one of the following:");
+        System.out.println("");
+        System.out.println("The sequential ID to select the booking to be completed.");
+        System.out.println("0. Back to main menu.");
+        System.out.println("-1. Quit application");
+        System.out.println("");
+
+        selection = input.nextInt();
+
+        if (selection == 0) {
+            mainMenu();
+        }
+        else if (selection == -1) {
+            System.exit(1);
+        }
+
+        input.close();
+    }
+
+    /**
+     * The main method
+     */
     public static void main(String[] args) {
         ArrayList<Assistant> assistants = new ArrayList<>();
         String[] assistantName;
@@ -798,11 +1145,5 @@ public class BookingApp {
         BookingApp bookingApp = new BookingApp(assistants, rooms);
 
         bookingApp.mainMenu();
-        /*
-        BookingSystem bookingsystems = new BookingSystem();
-        bookingsystems.addBookableRooms(rooms.get(0), "Hello");
-        bookingsystems.addBookableRooms(rooms.get(1), "World");
-        bookingsystems.listAllBookableRooms();
-        */
     }
 }
