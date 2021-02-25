@@ -1,5 +1,12 @@
 import java.util.ArrayList;
 
+/**
+ * backend of the booking app with most functionalities
+ * 
+ * @author Matthew Cheng 
+ * @author https://github.com/matthewcheng222
+ */
+
 public class BookingSystem {
     // private instance variables
     private ArrayList<BookableRoom> bookableRooms = new ArrayList<>();
@@ -28,8 +35,11 @@ public class BookingSystem {
      */
     public void removeBookableRooms(int selectedID) {
         for (int br = 0; br < bookableRooms.size(); br++) {
-            if (bookableRooms.get(br).getSeqID() == selectedID) {
+            if (bookableRooms.get(br).getSeqID() == selectedID && bookableRooms.get(br).getStatus().equals("EMPTY")) {
                 bookableRooms.remove(br);
+            }
+            else {
+                System.out.println("bookable room cannot be removed since it is not EMPTY");
             }
         }
     }
@@ -268,6 +278,8 @@ public class BookingSystem {
         bookings.add(new Booking(timeSlot, studentEmail, bookableRooms, assistantOnShifts));
         // setting the status of assistant on shift to be busy when a booking is created
         assistantOnShifts.setStatus("BUSY");
+        // adding the occupancy of a bookable room by 1 when adding a booking
+        bookableRooms.incrementOccupancy();
     }
 
     /**
@@ -285,6 +297,15 @@ public class BookingSystem {
     }
 
     /**
+     * function getBookings
+     * 
+     * @return the bookings arraylist
+     */
+    public ArrayList<Booking> getBookings() {
+        return bookings;
+    }
+
+    /**
      * function removeBookings
      * 
      * @param selectedID the user-inputted sequential ID of the booking to be removed 
@@ -295,6 +316,8 @@ public class BookingSystem {
                 bookings.remove(b);
                 // setting the status of assistant on shift to be FREE when a booking is removed
                 bookings.get(b).getAssistantOnShifts().setStatus("FREE");
+                // decreasing the occupancy of a bookable room by 1 when a booking is removed
+                bookings.get(b).getBookableRooms().decreaseOccupancy();
             }
         }
     }
@@ -373,5 +396,4 @@ public class BookingSystem {
             }
         }
     }
-    
 }
