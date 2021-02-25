@@ -1,3 +1,10 @@
+/**
+ * represents a room
+ * 
+ * @author Matthew Cheng 
+ * @author https://github.com/matthewcheng222
+ */
+
 public class Room {
     // private instance variables
     private String code;
