@@ -1,3 +1,10 @@
+/**
+ * represents an assistant on shift
+ * 
+ * @author Matthew Cheng 
+ * @author https://github.com/matthewcheng222
+ */
+
 public class AssistantOnShift {
     // private instance variables
     private Assistant assistants;
