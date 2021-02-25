@@ -1,9 +1,16 @@
+/**
+ * represents a bookable room
+ * 
+ * @author Matthew Cheng 
+ * @author https://github.com/matthewcheng222
+ */
+
 public class BookableRoom {
     // private instance variables
     private Room rooms;
     private String timeSlot;
     private String status;
-    private int occupancy;
+    private int occupancy = 0;;
     private int seqID;
 
     /**
@@ -22,13 +29,36 @@ public class BookableRoom {
     // public setters and getters for private instances 
 
     /**
+     * adding the occupancy of a bookable room by 1
      * setting the status of a bookable room with a given occupancy
      * 
      * @param occupancy the occupancy of the bookable room
      */
-    public void setStatus(int occupancy) {
-        this.occupancy = occupancy;
+    public void incrementOccupancy() {
         // setting status to EMPTY if occupancy is 0
+        occupancy++;
+        if (occupancy == 0) {
+            status = "EMPTY";
+        }
+        // setting status to AVAILABLE if occupancy is less than the room capacity
+        else if (occupancy < rooms.getCapacity() && occupancy > 0) {
+            status = "AVAILABLE";
+        }
+        // setting status to FULL if occupancy is equal to the room capacity
+        else if (occupancy == rooms.getCapacity() && occupancy > 0) {
+            status = "FULL";
+        }
+    }
+
+    /**
+     * decreasing the occupancy of a bookable room by 1
+     * setting the status of a bookable room with a given occupancy
+     * 
+     * @param occupancy the occupancy of the bookable room
+     */
+    public void decreaseOccupancy() {
+        // setting status to EMPTY if occupancy is 0
+        occupancy--;
         if (occupancy == 0) {
             status = "EMPTY";
         }
