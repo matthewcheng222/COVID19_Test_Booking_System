@@ -1,3 +1,10 @@
+/**
+ * represents a booking
+ * 
+ * @author Matthew Cheng 
+ * @author https://github.com/matthewcheng222
+ */
+
 public class Booking {
     // private instance variables
     private BookableRoom bookableRooms;
