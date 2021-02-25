@@ -1,3 +1,9 @@
+/**
+ * represents an assistant
+ * 
+ * @author Matthew Cheng 
+ * @author https://github.com/matthewcheng222
+ */
 public class Assistant {
     // private instance variables
     private String universityEmail;
