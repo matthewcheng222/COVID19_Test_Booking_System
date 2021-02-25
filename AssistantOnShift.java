@@ -1,116 +1,78 @@
 /**
- * represents a bookable room
+ * represents an assistant on shift
  * 
  * @author Matthew Cheng 
  * @author https://github.com/matthewcheng222
  */
 
-public class BookableRoom {
+public class AssistantOnShift {
     // private instance variables
-    private Room rooms;
-    private String timeSlot;
+    private Assistant assistants;
     private String status;
-    private int occupancy = 0;;
     private int seqID;
+    private String timeSlot;
 
     /**
-     * constructor for initialising bookable rooms
+     * constructor for initialising assistant on shift
      * 
-     * @param rooms the room to be initialised
+     * @param assistants the assistant to be initialised 
      * @param timeSlot the time slot to be initialised
      */
-    public BookableRoom(Room rooms, String timeSlot) {
-        this.rooms = rooms;
+    public AssistantOnShift(Assistant assistants, String timeSlot) {
+        this.assistants = assistants;
         this.timeSlot = timeSlot;
-        // setting the status of the bookable room to be EMPTY when created
-        this.status = "EMPTY";
+        // setting the status of assistant on shift to be FREE when created
+        this.status = "FREE";
     }
 
-    // public setters and getters for private instances 
+    // public getters and setters for private instances 
 
     /**
-     * adding the occupancy of a bookable room by 1
-     * setting the status of a bookable room with a given occupancy
-     * 
-     * @param occupancy the occupancy of the bookable room
+     * @param status the status of assistant on shift to be set
      */
-    public void incrementOccupancy() {
-        // setting status to EMPTY if occupancy is 0
-        occupancy++;
-        if (occupancy == 0) {
-            status = "EMPTY";
-        }
-        // setting status to AVAILABLE if occupancy is less than the room capacity
-        else if (occupancy < rooms.getCapacity() && occupancy > 0) {
-            status = "AVAILABLE";
-        }
-        // setting status to FULL if occupancy is equal to the room capacity
-        else if (occupancy == rooms.getCapacity() && occupancy > 0) {
-            status = "FULL";
-        }
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     /**
-     * decreasing the occupancy of a bookable room by 1
-     * setting the status of a bookable room with a given occupancy
-     * 
-     * @param occupancy the occupancy of the bookable room
-     */
-    public void decreaseOccupancy() {
-        // setting status to EMPTY if occupancy is 0
-        occupancy--;
-        if (occupancy == 0) {
-            status = "EMPTY";
-        }
-        // setting status to AVAILABLE if occupancy is less than the room capacity
-        else if (occupancy < rooms.getCapacity() && occupancy > 0) {
-            status = "AVAILABLE";
-        }
-        // setting status to FULL if occupancy is equal to the room capacity
-        else if (occupancy == rooms.getCapacity() && occupancy > 0) {
-            status = "FULL";
-        }
-    }
-
-    /**
-     * @param seqID the sequential ID of a bookable room
+     * @param seqID the sequential ID of assistant on shift to be set
      */
     public void setSeqID(int seqID) {
         this.seqID = seqID;
     }
 
     /**
-     * @return the status of a bookable room
+     * @return the status of assistant on shift
      */
     public String getStatus() {
         return status;
     }
 
     /**
-     * @return the room of a bookable room
-     */
-    public Room getRooms() {
-        return rooms;
-    }
-
-    /**
-     * @return the sequential ID of a bookable room
+     * @return the sequential ID of assistant on shift
      */
     public int getSeqID() {
         return seqID;
     }
 
     /**
-     * @return the time slot of a bookable room
+     * @return the assistant of assistant on shift
+     */
+    public Assistant getAssistants() {
+        return assistants;
+    }
+
+    /**
+     * @return the time slot of assistant on shift
      */
     public String getTimeSlot() {
         return timeSlot;
     }
 
     /**
-     * @return the print template of a bookable room
+     * @return the print template of assistant on shift
      */
-    public String getBookableRooms() {
-        return "| " + timeSlot + " | " + status + " | " + rooms.getCode() + " | occupancy: " + occupancy + " |";
+    public String getAssistantOnShift() {
+        return "| " + timeSlot + " | " + status + " | " + assistants.getUniversityEmail() + " |";
     }
 }
