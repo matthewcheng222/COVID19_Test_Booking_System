@@ -5,7 +5,7 @@ import java.util.Scanner;
  * An application for the Booking System of COVID tests for the University of Knowledge
  * 
  * @author Matthew Cheng 
- * @version 1.1
+ * @author https://github.com/matthewcheng222
  */
 public class BookingApp {
     // private instance variables
@@ -66,6 +66,7 @@ public class BookingApp {
         System.out.println("Press -1 (or ctrl+c) to quit this application.");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         // switch cases for user-selected options
@@ -138,6 +139,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -145,6 +147,11 @@ public class BookingApp {
         }
         else if (selection == -1) {
             System.exit(1);
+        }
+        else{
+            // if user enters an invalid option -> prompted back to listBookableRooms
+            System.out.println("Please enter an valid option");
+            listBookableRooms();
         }
         input.close();
     }
@@ -188,6 +195,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted line
         selection = input.nextLine();
 
         if (selection.equals("0")) {
@@ -209,21 +217,29 @@ public class BookingApp {
                 String timeSlot = date + " " + time;
                 // for loop to check which room does the user-entered sequential ID refer to
                 for (int sr = 0; sr < rooms.size(); sr++) {
-                    if (rooms.get(sr).getSeqID() == selectedID) {
+                    // checking if user-inputted date matches format <dd/mm/yyyy> and time matches format <HH:MM>
+                    if (rooms.get(sr).getSeqID() == selectedID && date.matches("\\d{2}/\\d{2}/\\d{4}") && time.matches("\\d{2}:\\d{2}")) {
                         // adding a bookable room by calling the function addBookableRooms from bookingSystems
                         bookingSystems.addBookableRooms(rooms.get(sr), timeSlot);
                         // promoting the user to menu addBookableRoomsValidInput 
                         addBookableRoomsValidInput(selectedID);
                     }
+                    else {
+                        // prompt user to addBookableRoomsInvalidInput if user entered date and time does not match the format
+                        addBookableRoomsInvalidInput("Please enter a valid date and time (<dd/mm/yyyy HH:MM>)");
+                    }
                 }
             }
             // checking if the length of the splitted string is not equal to 3
             else if (splitString.length != 3){
-                // prompting the user to menu addBookableRoomsInvalidInput
+                // prompting the user to menu addBookableRoomsInvalidInput since user input does not follow the required format
                 addBookableRoomsInvalidInput("Please follow the correct format listed below.");
             }
+            else {
+                // prompting the user to menu addBookableRoomsInvalidInput
+                addBookableRoomsInvalidInput("Please enter a valid option.");
+            }
         }
-
         input.close(); 
     }
 
@@ -254,6 +270,7 @@ public class BookingApp {
         System.out.println("-1. Quit application.");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -262,7 +279,11 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu addBookableRooms if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            addBookableRooms();
+        }
         input.close(); 
     }
 
@@ -293,6 +314,7 @@ public class BookingApp {
         System.out.println("-1. Quit application.");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -301,7 +323,11 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu addBookableRooms if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            addBookableRooms();
+        }
         input.close(); 
     }
 
@@ -336,6 +362,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -345,12 +372,27 @@ public class BookingApp {
             System.exit(1);
         }
         else {
-            removeBookableRoomsValidInput(selection);
+            // checking if the user input is of type integer
+            if (input.hasNextInt()) {
+                removeBookableRoomsValidInput(selection);
+            }
+            else {
+                String errorMessage = "Please enter a valid option";
+                removeBookableRoomsInvalidInput(errorMessage);
+            }
         }
-
         input.close();
     }
 
+    /**
+     * menu removeBookableRoomsValidInput (if the user input in menu removeBookableRooms is valid)
+     * 
+     * printing the bookable room to be removed and removing it
+     * only EMPTY bookable rooms can be removed (menu removeBookableRooms on shows EMPTY bookable rooms as options)
+     * @param selectedID the user-selected sequential ID of bookable room to be removed
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void removeBookableRoomsValidInput(int selectedID) {
         int selection;
         Scanner input = new Scanner(System.in);
@@ -359,6 +401,7 @@ public class BookingApp {
         System.out.flush();  
 
         System.out.println("Bookable Room removed successfully:");
+        // printing the bookable room to be removed
         bookingSystems.getSpecificBookableRoomRemove(selectedID);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
@@ -366,8 +409,10 @@ public class BookingApp {
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
+        // removing the user-selected bookable room by calling function removeBookableRooms from bookingSystems
         bookingSystems.removeBookableRooms(selectedID);
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -376,19 +421,33 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu removeBookableRooms if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            removeBookableRooms();
+        }
         input.close();
     }
 
-    public void removeBookableRoomsInvalidInput() {
+    /**
+     * menu removeBookableRoomsInvalidInput (if the user input in menu removeBookableRooms is invalid)
+     * 
+     * printing the error message if user input for removing bookable room is invalid
+     * @param errorMessage the error message to be printed to user 
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
+    public void removeBookableRoomsInvalidInput(String errorMessage) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Error!");
-        System.out.println("<message explaining the error>");
+        // printing the passed parameter errorMessage
+        System.out.println(errorMessage);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
         System.out.println("The sequential ID to select the bookable room to be removed.");
@@ -396,6 +455,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -404,26 +464,40 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu removeBookableRooms if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            removeBookableRooms();
+        }
         input.close();
     }
 
+    /**
+     * menu listAssistantOnShift (option 4 of main menu)
+     * 
+     * listing all assistants on shift with their sequential ID
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void listAssistantOnShift() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("University of Knowledge - COVID test");
         System.out.println("");
         System.out.println("List of Assistants On Shift");
+        // listing out all assistants on shift by calling function listAllAssistantsOnShift from bookingSystems
         bookingSystems.listAllAssistantsOnShift();
         System.out.println("");
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
         
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -432,15 +506,28 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu listAssistantOnShift if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            listAssistantOnShift();
+        }
         input.close();
     }
 
+    /**
+     * menu addAssistantOnShift (option 5 of main manu)
+     * 
+     * printing the list of assistants with sequential ID
+     * adding assistant on shift by inputting their sequential ID and date
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void addAssistantOnShift() {
         String selection;
         int la = 11;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
@@ -449,6 +536,7 @@ public class BookingApp {
         System.out.println("Adding assistant on shift");
         System.out.println("");
         System.out.println("List of Assistants:");
+        // printing the list of assistants with their sequential ID
         for (int at = 0; at < assistants.size(); at++) {
             String listAssistants = "";
             listAssistants = assistants.get(at).getAssistants();
@@ -464,6 +552,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted line
         selection = input.nextLine();
 
         if (selection.equals("0")) {
@@ -473,34 +562,60 @@ public class BookingApp {
             System.exit(1);
         }
         else {
+            // splitting the user inputted line by empty spaces
             String[] splitString = selection.split(" ");
+            // checking if array of splitted string is of length 2
             if (splitString.length == 2) {
+                // setting variable selectedID to be the first element of the user inputted line
                 int selectedID = Integer.parseInt(splitString[0]);
+                // setting variable date to be the second element of the user inputted line
                 String date = splitString[1];
                 for (int sa = 0; sa < assistants.size(); sa++) {
-                    if (assistants.get(sa).getSeqID() == selectedID) {
+                    // check if user-inputted date matches format of <dd/mm/yyyy>
+                    if (assistants.get(sa).getSeqID() == selectedID && date.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                        // adding assistant on shift by calling function addAssistantsOnShift from bookingSystems
                         bookingSystems.addAssistantsOnShift(assistants.get(sa), date);
+                        // prompting user to menu addAssistantOnShiftValidInput if their input is valid
+                        addAssistantOnShiftValidInput();
+                    }
+                    else {
+                        // prompting user to menu addAssistantOnShiftInvalidInput since the inputted date format is invalid
+                        String errorMessage = "Please enter a valid date of format <dd/mm/yyyy>";
+                        addAssistantOnShiftInvalidInput(errorMessage);
                     }
                 }
-                addAssistantOnShiftValidInput();
+            }
+            else if (splitString.length != 2) {
+                // prompting user to menu addAssistantOnShiftInvalidInput since the inputted format is invalid
+                String errorMessage = "Please enter a valid option using the format below";
+                addAssistantOnShiftInvalidInput(errorMessage);
             }
             else {
-                String errorMessage = "This is an error message";
+                // prompting user to menu addAssistantOnShiftInvalidInput since the inputted option is invalid
+                String errorMessage = "Please enter a valid option";
                 addAssistantOnShiftInvalidInput(errorMessage);
             }
         }
-
         input.close();
     }
 
+    /**
+     * menu addAssistantOnShiftValidInput (if the user input in menu addAssistantOnShift is valid)
+     * 
+     * printing the assistant on shift to be added (newest element of array assistantOnShifts)
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void addAssistantOnShiftValidInput() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Assistant on Shift added successfully:");
+        // printing the newest added assistant on shift by calling functin getNewAddedAssistantsOnShift from bookingSystems
         bookingSystems.getNewAddedAssistantsOnShift();
         System.out.println("Please, enter one of the following:");
         System.out.println("");
@@ -509,6 +624,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -517,18 +633,31 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu addAssistantOnShift if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            addAssistantOnShift();
+        }
         input.close();
     }
 
+    /**
+     * menu addAssistantOnShiftInvalidInput (if the user input in menu addAssistantOnShift is invalid)
+     * 
+     * @param errorMessage the error messsage to be printed to the user
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void addAssistantOnShiftInvalidInput(String errorMessage) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Error!");
+        // printing the error message
         System.out.println(errorMessage);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
@@ -537,6 +666,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -545,20 +675,35 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu addAssistantOnShift if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            addAssistantOnShift();
+        }
         input.close();
     }
 
+    /**
+     * menu removeAssistantOnShift (option 6 of main menu)
+     * 
+     * listing free assistants on shift and allowing user to remove assistant on shift
+     * assistant on shift can be removed by entering the sequential ID of the entry
+     * only FREE assistants can be removed from the system (only FREE assistants are listed as options)
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void removeAssistantOnShift() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("University of Knowledge - COVID test");
         System.out.println("");
         System.out.println("List of Free Assistants On Shift");
+        // printing the list of free assistants on shift by calling function listFreeAssistantOnShift from bookingSystems
         bookingSystems.listFreeAssistantOnShift();
         System.out.println("");
         System.out.println("Removing assistant on shift");
@@ -570,6 +715,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -579,20 +725,38 @@ public class BookingApp {
             System.exit(1);
         }
         else {
-            removeAssistantOnShiftValidInput(selection);
+            // checking if user input is of type integer
+            if (input.hasNextInt()) {
+                // prompting user to menu removeAssistantOnShiftValidInput if input is valid
+                removeAssistantOnShiftValidInput(selection);
+            }
+            else {
+                // prompting user to menu removeAssistantOnShiftInvalidInput since user-input is invalid
+                String errorMessage = "Please enter a valid option";
+                removeAssistantOnShiftInvalidInput(errorMessage);
+            }
         }
-
         input.close();
     }
 
+    /**
+     * menu removeAssistantOnShiftValidInput (if the user input in menu addAssistantOnShift is valid)
+     * 
+     * printing the assistant on shift to be removed and removing it
+     * @param selectedID the sequential ID of assistant on shift to be removed
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void removeAssistantOnShiftValidInput(int selectedID) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Assistant on Shift removed successfully:");
+        // printing the assistant on shift to be removed by calling function getSpecificAssistantOnShiftRemove from bookingSystems
         bookingSystems.getSpecificAssistantOnShiftRemove(selectedID);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
@@ -600,8 +764,10 @@ public class BookingApp {
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
+        // removing the assistant on shift by calling function removeAssistantsOnShift from bookingSystems with sequential ID
         bookingSystems.removeAssistantsOnShift(selectedID);
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -610,18 +776,31 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu removeAssistantOnShift if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            removeAssistantOnShift();
+        }
         input.close();
     }
 
+    /**
+     * menu removeAssistantOnShiftInvalidInput (if the user input in menu addAssistantOnShift is invalid)
+     * 
+     * @param errorMessage the error message to be printed to the console
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void removeAssistantOnShiftInvalidInput(String errorMessage) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Error!");
+        // printing the errorMessage
         System.out.println(errorMessage);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
@@ -630,6 +809,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -638,14 +818,27 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu removeAssistantOnShift if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            removeAssistantOnShift();
+        }
         input.close();
     }
 
+    /**
+     * menu listBookings (option 7 of main menu)
+     * 
+     * allowing users to access a menu of options for listing bookings:
+     *     listing all / scheduled or completed bookings
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void listBookings() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
@@ -659,8 +852,10 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
+        // switch cases for user-selected options
         switch (selection) {
             case 1:
                 listBookingsAll();
@@ -681,23 +876,32 @@ public class BookingApp {
                 listBookingsDefault();
                 break;
         }
-
         input.close();
     }
 
+    /**
+    * menu listBookingsAll (option 1 of menu listBookings)
+    * 
+    * listing ALL bookings with sequential ID
+    * 
+    * (option 0 returns to main menu, option -1 quits the application)
+    */
     public void listBookingsAll() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("List of All Bookings:");
+        // printing out all bookings with sequential ID by calling function listAllBookings from bookingSystems
         bookingSystems.listAllBookings();
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -706,23 +910,37 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu listBookings if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            listBookings();
+        }
         input.close();
     }
 
+    /**
+    * menu listBookingsScheduled (option 2 of menu listBookings)
+    * 
+    * listing SCHEDULED bookings with sequential ID
+    * 
+    * (option 0 returns to main menu, option -1 quits the application)
+    */
     public void listBookingsScheduled() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("List of Scheduled Bookings:");
+        // printing out scheduled bookings with sequential ID by calling function listScheduledBookings from bookingSystems
         bookingSystems.listScheduledBookings();
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -731,23 +949,37 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu listBookings if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            listBookings();
+        }
         input.close();
     }
 
+    /**
+    * menu listBookingsCompleted (option 3 of menu listBookings)
+    * 
+    * listing COMPLETED bookings with sequential ID
+    * 
+    * (option 0 returns to main menu, option -1 quits the application)
+    */
     public void listBookingsCompleted() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("List of Completed Bookings:");
+        // printing out completed bookings with sequential ID by calling function listCompletedBookings from bookingSystems
         bookingSystems.listCompletedBookings();
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -756,23 +988,37 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu listBookings if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            listBookings();
+        }
         input.close();
     }
 
+    /**
+    * menu listBookingsDefault (default case of menu listBookings)
+    * 
+    * listing ALL bookings with sequential ID (default case)
+    * 
+    * (option 0 returns to main menu, option -1 quits the application)
+    */
     public void listBookingsDefault() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console 
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("List of Bookings:");
+        // printing out all bookings with sequential ID by calling function listAllBookings from bookingSystems
         bookingSystems.listAllBookings();
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -781,15 +1027,29 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu listBookings if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            listBookings();
+        }
         input.close();
     }
 
+    /**
+     * menu addBooking (option 8 of main menu)
+     * 
+     * allow the user to add bookings by selecting the sequential ID of the list of available time slots
+     * a booking can be added if there is a bookable room not FULL and an assistant on shift not FREE at a given time
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void addBooking() {
         String selection;
         Scanner input = new Scanner(System.in);
+        // setting / refreshing the arraylist availableTimeSlots by calling function setAvailableTimeSlots from bookingSystems
         bookingSystems.setAvailableTimeSlots();
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
@@ -798,6 +1058,7 @@ public class BookingApp {
         System.out.println("Adding booking (appointment for a COVID test) to the system");
         System.out.println("");
         System.out.println("List of available time-slots:");
+        // printing out the list of available time slots by calling function showAvailableTimeSlots from bookingSystems
         bookingSystems.showAvailableTimeSlots();
         System.out.println("");
         System.out.println("Please, enter one of the following:");
@@ -807,6 +1068,7 @@ public class BookingApp {
         System.out.println("-1. Quit application.");
         System.out.println("");
 
+        // setting variable selection to be the next inputted line
         selection = input.nextLine();
 
         if (selection.equals("0")) {
@@ -817,8 +1079,11 @@ public class BookingApp {
         }
         else {
             String[] splitString = selection.split(" ");
-            if (splitString.length == 2) {
+            // checking if the length of array splitString is 2 and the second element (student email) follows the pattern *@uok.ac.uk
+            if (splitString.length == 2 && splitString[1].endsWith("@uok.ac.uk")) {
+                // setting the variable selectedID to be the first element of array splitString
                 int selectedID = Integer.parseInt(splitString[0]);
+                // setting the variable selectedID to be the second element of array splitString
                 String studentEmail = splitString[1];
                 for (int i = 0; i < bookingSystems.getAvailableTimeSlots().size(); i++) {
                     String[] availableTimeSlots = bookingSystems.getAvailableTimeSlots().get(i).split(" ");
@@ -837,27 +1102,44 @@ public class BookingApp {
                     }
                 }
             }
-            else {
+            // case if the length of splitString is not 2 (wrong entry format)
+            else if (splitString.length != 2) {
+                // prompting user to menu addBookingInvalidInput since the format of entry is invalid
                 String errorMessage = "Please follow the correct format of entry";
                 addBookingInvalidInput(errorMessage);
             }
+            else {
+                // prompting user to menu addBookingInvalidInput since the student email format is invalid
+                String errorMessage = "Please enter a valid student email";
+                addBookingInvalidInput(errorMessage);
+            }
         }
-
         input.close();
     }
 
+    /**
+     * menu addBookingValidInput (if the user input in menu addBooking is valid)
+     * 
+     * printing the newest added booking and allowing user to further book bookings
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void addBookingValidInput() {
         String selection;
         Scanner input = new Scanner(System.in);
+        // setting / refreshing the arraylist availableTimeSlots by calling function setAvailableTimeSlots from bookingSystems
         bookingSystems.setAvailableTimeSlots();
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Booking added successfully:");
+        // printing the newest added booking
         bookingSystems.getNewestAddedBooking();
         System.out.println("");
         System.out.println("List of available time-slots:");
+        // printing out the list of available time slots by calling function showAvailableTimeSlots from bookingSystems
         bookingSystems.showAvailableTimeSlots();
         System.out.println("");
         System.out.println("Please, enter one of the following:");
@@ -867,6 +1149,7 @@ public class BookingApp {
         System.out.println("-1. Quit application.");
         System.out.println("");
 
+        // setting variable selection to be the next inputted line
         selection = input.nextLine();
 
         if (selection.equals("0")) {
@@ -877,8 +1160,11 @@ public class BookingApp {
         }
         else {
             String[] splitString = selection.split(" ");
-            if (splitString.length == 2) {
+            // checking if the length of array splitString is 2 and the second element (student email) follows the pattern *@uok.ac.uk
+            if (splitString.length == 2 && splitString[1].endsWith("@uok.ac.uk")) {
+                // setting the variable selectedID to be the first element of array splitString
                 int selectedID = Integer.parseInt(splitString[0]);
+                // setting the variable selectedID to be the second element of array splitString
                 String studentEmail = splitString[1];
                 for (int i = 0; i < bookingSystems.getAvailableTimeSlots().size(); i++) {
                     String[] availableTimeSlots = bookingSystems.getAvailableTimeSlots().get(i).split(" ");
@@ -897,23 +1183,38 @@ public class BookingApp {
                     }
                 }
             }
-            else {
+            // case if the length of splitString is not 2 (wrong entry format)
+            else if (splitString.length != 2) {
+                // prompting user to menu addBookingInvalidInput since the format of entry is invalid
                 String errorMessage = "Please follow the correct format of entry";
                 addBookingInvalidInput(errorMessage);
             }
+            else {
+                // prompting user to menu addBookingInvalidInput since the student email format is invalid
+                String errorMessage = "Please enter a valid student email";
+                addBookingInvalidInput(errorMessage);
+            }
         }
-
         input.close();
     }
 
+    /**
+     * menu addBookingInvalidInput (if the user input in menu addBooking is invalid)
+     * 
+     * @param errorMessage the error message to be printed to the user
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void addBookingInvalidInput(String errorMessage) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Error!");
+        // printing the error message
         System.out.println(errorMessage);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
@@ -922,6 +1223,7 @@ public class BookingApp {
         System.out.println("-1. Quit application.");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -930,20 +1232,33 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu addBooking if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            addBooking();
+        }
         input.close();
     }
 
+    /**
+     * menu removeBooking (option 9 of the main menu)
+     * 
+     * printing the list of scheduled bookings and allow user to remove a booking by inputting the sequential ID
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void removeBooking() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("University of Knowledge - COVID test");
         System.out.println("");
         System.out.println("List of Scheduled Bookings");
+        // printing the list of scheduled bookings
         bookingSystems.listScheduledBookings();
         System.out.println("");
         System.out.println("Removing booking from the system");
@@ -955,6 +1270,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -964,20 +1280,39 @@ public class BookingApp {
             System.exit(1);
         }
         else {
-            removeBookingValidInput(selection);
+            // checking if user input is of type int
+            if (input.hasNextInt()) {
+                // prompting user to menu removeBookingValidInput
+                removeBookingValidInput(selection);
+            }
+            else {
+                // prompting user to menu removeBookingInvalidInput with errorMessage
+                String errorMessage = "Please enter a valid input";
+                removeBookingInvalidInput(errorMessage);
+            }
         }
-
         input.close();
     }
 
+    /**
+     * menu removeBookingValidInput (if the user input in menu removeBooking is valid)
+     * 
+     * printing the booking to be removed and removing the booking
+     * only a SCHEDULED booking can be removed (since only SCHEDULED bookings are listed)
+     * @param selectedID the sequential ID of the booking to be removed
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void removeBookingValidInput(int selectedID) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Booking removed successfully:");
+        // printing the booking to be removed
         bookingSystems.getSpecificBooking(selectedID);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
@@ -985,8 +1320,10 @@ public class BookingApp {
         System.out.println("0. Back to main menu.");
         System.out.println("-1. Quit application");
         System.out.println("");
+        // removing the booking by calling function removeBookings from bookingSystems with selectedID
         bookingSystems.removeBookings(selectedID);
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -995,18 +1332,31 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu removeBooking if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            removeBooking();
+        }
         input.close();
     }
 
+    /**
+     * menu removeBookingInvalidInput (if the user input in menu removeBooking is invalid)
+     * 
+     * @param errorMessage the error message to be printed to the user
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void removeBookingInvalidInput(String errorMessage) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Error!");
+        // printing the error message
         System.out.println(errorMessage);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
@@ -1015,6 +1365,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -1023,20 +1374,33 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu removeBooking if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            removeBooking();
+        }
         input.close();
     }
 
+    /**
+     * menu concludeBooking (option 10 of the main menu)
+     * 
+     * printing the list of scheduled bookings with sequential ID and allowing user to conclude a booking
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void concludeBooking() {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("University of Knowledge - COVID test");
         System.out.println("");
         System.out.println("List of Scheduled Bookings:");
+        // printing the list of scheduled bookings
         bookingSystems.listScheduledBookings();
         System.out.println("");
         System.out.println("Conclude booking");
@@ -1048,6 +1412,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -1057,21 +1422,39 @@ public class BookingApp {
             System.exit(1);
         }
         else {
-            concludeBookingValidInput(selection);
+            // checking if user input is of type integer
+            if (input.hasNextInt()) {
+                // prompting user to menu concludeBookingValidInput
+                concludeBookingValidInput(selection);
+            }
+            else {
+                // prompting user to menu concludeBookingInvalidInput with errorMessage
+                String errorMessage = "Please enter a valid option";
+                concludeBookingInvalidInput(errorMessage);
+            }
         }
-
         input.close();
     }
 
+    /**
+     * menu concludeBookingValidInput (if the user input in menu concludeBooking is valid)
+     * 
+     * @param selectedID the sequential ID of booking to be concluded
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
     public void concludeBookingValidInput(int selectedID) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Booking completed successfully:");
+        // concluding the booking by calling function concludeBookings from bookingSystems with selectedID
         bookingSystems.concludeBookings(selectedID);
+        // printing the booking concluded
         bookingSystems.getSpecificBooking(selectedID);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
@@ -1080,6 +1463,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -1088,19 +1472,32 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu concludeBooking if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            concludeBooking();
+        }
         input.close();
     }
 
-    public void concludeBookingInvalidInput() {
+    /**
+     * menu concludeBookingInvalidInput (if the user input in menu concludeBooking is invalid)
+     * 
+     * @param errorMessage the error message to be printed to the user
+     * 
+     * (option 0 returns to main menu, option -1 quits the application)
+     */
+    public void concludeBookingInvalidInput(String errorMessage) {
         int selection;
         Scanner input = new Scanner(System.in);
 
+        // clearing the console
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
 
         System.out.println("Error!");
-        System.out.println("<message explaining the error>");
+        // printing the error message to the user
+        System.out.println(errorMessage);
         System.out.println("Please, enter one of the following:");
         System.out.println("");
         System.out.println("The sequential ID to select the booking to be completed.");
@@ -1108,6 +1505,7 @@ public class BookingApp {
         System.out.println("-1. Quit application");
         System.out.println("");
 
+        // setting variable selection to be the next inputted integer
         selection = input.nextInt();
 
         if (selection == 0) {
@@ -1116,14 +1514,49 @@ public class BookingApp {
         else if (selection == -1) {
             System.exit(1);
         }
-
+        else {
+            // prompting the user back to menu concludeBooking if user-entered option is invalid
+            System.out.println("Please enter a valid option");
+            concludeBooking();
+        }
         input.close();
+    }
+
+    /**
+     * loads the main menu with initial data, including creating
+     *     - 9 bookable rooms
+     *     - 6 assistants on shift
+     *     - 2 bookings
+     */
+    public void initializeData() {
+        // adding 9 bookable rooms
+        bookingSystems.addBookableRooms(rooms.get(0), "21/02/2021 07:00");
+        bookingSystems.addBookableRooms(rooms.get(0), "21/02/2021 08:00");
+        bookingSystems.addBookableRooms(rooms.get(0), "21/02/2021 09:00");
+        bookingSystems.addBookableRooms(rooms.get(1), "21/02/2021 07:00");
+        bookingSystems.addBookableRooms(rooms.get(1), "21/02/2021 08:00");
+        bookingSystems.addBookableRooms(rooms.get(1), "21/02/2021 09:00");
+        bookingSystems.addBookableRooms(rooms.get(2), "21/02/2021 07:00");
+        bookingSystems.addBookableRooms(rooms.get(2), "21/02/2021 08:00");
+        bookingSystems.addBookableRooms(rooms.get(2), "21/02/2021 09:00");
+
+        // adding 6 assistants on shift (3 assistants on shift is created when passed at once)
+        bookingSystems.addAssistantsOnShift(assistants.get(0), "21/02/2021");
+        bookingSystems.addAssistantsOnShift(assistants.get(1), "21/02/2021");
+
+        // adding 2 bookings
+        bookingSystems.addBookings("21/02/2021 07:00", "ab123@uok.ac.uk", bookingSystems.getBookableRoom().get(0), bookingSystems.getAssistantOnShifts().get(0));
+        bookingSystems.addBookings("21/02/2021 08:00", "cd456@uok.ac.uk", bookingSystems.getBookableRoom().get(4), bookingSystems.getAssistantOnShifts().get(4));
+
+        // concluding 1 booking
+        bookingSystems.getBookings().get(1).setStatusCompleted();
     }
 
     /**
      * The main method
      */
     public static void main(String[] args) {
+        // initialising the arraylist of assistants with initial datas
         ArrayList<Assistant> assistants = new ArrayList<>();
         String[] assistantName;
         String[] assistantUniversityEmail;
@@ -1133,17 +1566,23 @@ public class BookingApp {
             assistants.add(new Assistant(assistantName[a], assistantUniversityEmail[a]));
         }
 
+        // initialising the arraylist of rooms with initial datas
         ArrayList<Room> rooms = new ArrayList<>();
         String[] roomCode;
         int[] roomCapacity;
         roomCode = new String[]{"AB123", "CD456", "EF789"};
-        roomCapacity = new int[]{3, 4, 5};
+        roomCapacity = new int[]{1, 4, 5};
         for (int r = 0; r < roomCode.length; r++) {
             rooms.add(new Room(roomCode[r], roomCapacity[r]));
         }
 
+        // creating a bookingApp object with objects created above
         BookingApp bookingApp = new BookingApp(assistants, rooms);
 
+        // calling function initializeData to initialize data (for section 1.3)
+        bookingApp.initializeData();
+
+        // calling function mainMenu to print out the main menu to the console
         bookingApp.mainMenu();
     }
 }
